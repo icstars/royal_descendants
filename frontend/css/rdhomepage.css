@@ -1,0 +1,10 @@
+.content {
+  margin: 0 auto;
+  width: 60%;
+}
+
+#hiddenMessage {
+  padding: 10px;
+  border: red 10px solid;
+  display: none;
+}
