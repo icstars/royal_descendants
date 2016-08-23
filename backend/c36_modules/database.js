@@ -1,15 +1,29 @@
-// var pg = require('pg');
-// var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/todo';
+"use strict";
 
-// var client = new pg.Client(connectionString);
-// client.connect();
+var pg = require('pg');
+var conString = process.env.DATABASE_URL;
 
-create table if not exists users (
- id serial,
- loginname varchar(250),
- password varchar(250),
- name varchar(400),
- score integer,
- primary key(id));
- 
-insert into users values(1, 'gcrowder', 'abc123', 'gavin', 0); 
+module.exports = function() {
+  return {
+    executeQuery: function(query, callback){
+      pg.connect(conString, function(err, client, done) {
+        if(err) {
+          return console.log('error fetching client from pool', err);
+        }
+        client.query(query, function(err, result) {
+          //call `done()` to release the client back to the pool
+          done();
+
+          if(err) {
+            return console.log('error running query', err);
+          }
+
+          if(callback){
+            callback(result.rows);
+          }
+          return;
+        });
+      });
+    }
+  }
+}();
